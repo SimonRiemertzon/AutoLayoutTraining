@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-      //Structure code so that viewDidLoad doesn't become clutered.
+    //Structure code so that viewDidLoad doesn't become clutered.
     
     let starImageView: UIImageView = {
         let imageView = UIImageView(image: #imageLiteral(resourceName: "star"))
@@ -19,29 +19,23 @@ class ViewController: UIViewController {
         return imageView
     }()
     
-    let someOtherImageview: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "cuteDog"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
     let descriptionTextView: UITextView = {
-       let textView = UITextView()
-        textView.text = "Join us today in our fun and games"
-        textView.font = UIFont.boldSystemFont(ofSize: 18)
+        let textView = UITextView()
+        let attributedText = NSMutableAttributedString(string: "Join us today in our fun and games", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 18)])
+        
+        attributedText.append(NSAttributedString(string: "\n\n\n Are you ready for loads and loads of fun? Dont wait any longer! We hope to see you in our stores soon.", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13), NSAttributedStringKey.foregroundColor: UIColor.gray]))
+        
+        textView.attributedText = attributedText
         textView.textAlignment = .center
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isEditable = false
         textView.isScrollEnabled = false
         return textView
     }()
-  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        view.addSubview(someOtherImageview)
-
         view.addSubview(descriptionTextView)
         
         setupLayout()
@@ -50,13 +44,14 @@ class ViewController: UIViewController {
     
     private func setupLayout() {
         let topImageContainerView = UIView()
-        topImageContainerView.backgroundColor = .blue
         view.addSubview(topImageContainerView)
-    
-        topImageContainerView.translatesAutoresizingMaskIntoConstraints = false
-        topImageContainerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        topImageContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        topImageContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
+        topImageContainerView.useAutolayoutWith(topAnchor: view.safeAreaLayoutGuide.topAnchor,
+                                                leadingAnchor: view.leadingAnchor,
+                                                bottomAnchor: view.safeAreaLayoutGuide.bottomAnchor,
+                                                trailingAnchor: view.trailingAnchor, padding: .init(top: 0, left: 16, bottom: 0, right: 16))
+        
+        
         topImageContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
         
         topImageContainerView.addSubview(starImageView)
@@ -66,20 +61,12 @@ class ViewController: UIViewController {
         
         starImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
         starImageView.heightAnchor.constraint(equalTo: topImageContainerView.heightAnchor, multiplier: 0.5).isActive = true
-        starImageView.alpha = 0.2
-        
-        someOtherImageview.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        someOtherImageview.topAnchor.constraint(equalTo: starImageView.topAnchor, constant: 100).isActive = true
-        someOtherImageview.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        someOtherImageview.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        someOtherImageview.alpha = 0.2
+        starImageView.alpha = 1
         
         descriptionTextView.topAnchor.constraint(equalTo: topImageContainerView.bottomAnchor).isActive = true
-        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24).isActive = true
+        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24).isActive = true
         descriptionTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-        
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -88,19 +75,16 @@ class ViewController: UIViewController {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+}
+
+extension UIView {
+    func useAutolayoutWith(topAnchor: NSLayoutYAxisAnchor, leadingAnchor: NSLayoutXAxisAnchor, bottomAnchor: NSLayoutYAxisAnchor, trailingAnchor: NSLayoutXAxisAnchor, padding: UIEdgeInsets = .zero) {
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        self.topAnchor.constraint(equalTo: topAnchor, constant: padding.top).isActive = true
+        self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding.left).isActive = true
+        self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding.right).isActive = true
+        self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding.bottom).isActive = true
+    }
 }
 
