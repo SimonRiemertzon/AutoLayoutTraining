@@ -4,100 +4,99 @@
 //
 //  Created by Simon Riemertzon on 2018-06-05.
 //  Copyright © 2018 Simon Riemertzon. All rights reserved.
-//
+//  Erik
 
 import UIKit
 
 class ViewController: UIViewController {
-    
-    //Structure code so that viewDidLoad doesn't become clutered.
-    let starImageView = UIImageView(image: #imageLiteral(resourceName: "star"))
-    let topImageContainerView = UIView()
-    let descriptionTextView = UITextView()
-//
-//    let starImageView: UIImageView = {
-//        let imageView = UIImageView(image: #imageLiteral(resourceName: "star"))
-//
-//        return imageView
-//    }()
-    
-//    let descriptionTextView: UITextView = {
-//        let textView = UITextView()
-//
-//        return textView
-//    }()
+    var descriptionTextView: UITextView!
+    var starImageView: UIImageView!
+    var topContainerView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        view.addSubview(descriptionTextView)
-
-        setupLayout()
+        //Instansiate ContainerViews
+        topContainerView = UIView()
         
-    }
-    
-   
-    
-    private func setupLayout() {
-        
-        view.addSubview(topImageContainerView)
-        
-        topImageContainerView.useAutolayoutWith(topAnchor: view.safeAreaLayoutGuide.topAnchor,
-                                                leadingAnchor: view.leadingAnchor,
-                                                bottomAnchor: view.safeAreaLayoutGuide.bottomAnchor,
-                                                trailingAnchor: view.trailingAnchor, padding: .init(top: 0, left: 16, bottom: 0, right: 16))
-        
-        topImageContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
-        topImageContainerView.addSubview(starImageView)
-        
-        starImageView.useAutoLayoutWith(centerXAnchor: topImageContainerView.centerXAnchor, centerYAnchor: topImageContainerView.centerYAnchor)
-        starImageView.contentMode = .scaleAspectFit
-        starImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        starImageView.heightAnchor.constraint(equalTo: topImageContainerView.heightAnchor, multiplier: 0.5).isActive = true
-        starImageView.alpha = 0.5
-        
-        
-        let attributedText = NSMutableAttributedString(string: "Join us today in our fun and games",
-                                                       attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 18)])
-        
-        attributedText.append(NSAttributedString(string: "\n\n\n Are you ready for loads and loads of fun? Dont wait any longer! We hope to see you in our stores soon.", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13), NSAttributedStringKey.foregroundColor: UIColor.gray]))
-        
+        //Instanciate ImageViews
+        starImageView = UIImageView(image: #imageLiteral(resourceName: "star"))
+     
+        //Instanciate TextViews
+        descriptionTextView = UITextView()
+        let attributedText = NSMutableAttributedString(
+            string: "Join us today in our fun and games",
+            attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 18)]
+        )
+        attributedText.append(
+            NSAttributedString(
+                string: "\n\n\n Are you ready for loads and loads of fun? Dont wait any longer! We hope to see you in our stores soon.",
+                attributes: [
+                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13),
+                    NSAttributedStringKey.foregroundColor: UIColor.gray
+                ]
+            )
+        )
         descriptionTextView.attributedText = attributedText
-        descriptionTextView.textAlignment = .center
-        descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         descriptionTextView.isEditable = false
         descriptionTextView.isScrollEnabled = false
-        descriptionTextView.topAnchor.constraint(equalTo: topImageContainerView.bottomAnchor).isActive = true
-        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24).isActive = true
-        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24).isActive = true
-        descriptionTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        descriptionTextView.textAlignment = .center
+        
+        [descriptionTextView, topContainerView].forEach { view.addSubview($0) }
+        [starImageView].forEach { topContainerView.addSubview($0)}
+    }
+    
+    override func viewWillLayoutSubviews() {
+        topContainerView.useAutolayoutWith(
+            topAnchor: view.safeAreaLayoutGuide.topAnchor,
+            leadingAnchor: view.leadingAnchor,
+            bottomAnchor: view.safeAreaLayoutGuide.bottomAnchor,
+            trailingAnchor: view.trailingAnchor,
+            padding: .init(top: 0, left: 16, bottom: 0, right: 16)
+        )
+        topContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
+        
+        starImageView.useAutolayoutWith(
+            centerXAnchor: topContainerView.centerXAnchor,
+            centerYAnchor: topContainerView.centerYAnchor)
+        
+        starImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        starImageView.heightAnchor.constraint(equalTo: topContainerView.heightAnchor, multiplier: 0.5).isActive = true
+        starImageView.contentMode = .scaleAspectFit
+        
+        descriptionTextView.useAutolayoutWith(topAnchor: topContainerView.bottomAnchor, leadingAnchor: view.leadingAnchor, bottomAnchor: view.bottomAnchor, trailingAnchor: view.trailingAnchor, padding: .init(top: 0, left: 24, bottom: 0, right: 24))
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
 }
 
 extension UIView {
-    func useAutolayoutWith(topAnchor: NSLayoutYAxisAnchor, leadingAnchor: NSLayoutXAxisAnchor, bottomAnchor: NSLayoutYAxisAnchor, trailingAnchor: NSLayoutXAxisAnchor, padding: UIEdgeInsets = .zero) {
-        translatesAutoresizingMaskIntoConstraints = false
+    func useAutolayoutWith(
+        topAnchor: NSLayoutYAxisAnchor? = nil,
+        leadingAnchor: NSLayoutXAxisAnchor? = nil,
+        bottomAnchor: NSLayoutYAxisAnchor? = nil,
+        trailingAnchor: NSLayoutXAxisAnchor? = nil,
+        centerXAnchor: NSLayoutXAxisAnchor? = nil,
+        centerYAnchor: NSLayoutYAxisAnchor? = nil,
+        padding: UIEdgeInsets = .zero,
+        size: CGSize = .zero
         
-        self.topAnchor.constraint(equalTo: topAnchor, constant: padding.top).isActive = true
-        self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding.left).isActive = true
-        self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding.right).isActive = true
-        self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding.bottom).isActive = true
-    }
+        ) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let topAnchor = topAnchor {self.topAnchor.constraint(equalTo: topAnchor, constant: padding.top).isActive = true}
+        if let leadingAnchor = leadingAnchor {self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding.left).isActive = true}
+        if let bottomAnchor = bottomAnchor {self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding.bottom).isActive = true}
+        if let trailingAnchor = trailingAnchor {self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding.right).isActive = true}
+        if let centerXAnchor = centerXAnchor {self.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true}
+        if let centerYAnchor = centerYAnchor {self.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true}
     
-    func useAutoLayoutWith(centerXAnchor: NSLayoutXAxisAnchor, centerYAnchor: NSLayoutYAxisAnchor) {
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        if size.height != 0 {heightAnchor.constraint(equalToConstant: size.height)}
+        if size.width != 0 { widthAnchor.constraint(equalToConstant: size.width)}
         
     }
-    
 }
 
