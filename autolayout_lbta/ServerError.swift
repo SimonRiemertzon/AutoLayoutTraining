@@ -22,14 +22,10 @@ enum ServerError: Int, Error {
 	}
 }
 
-func connectToServer(serverNumber: ServerError?) {
-	if let serverNumber = serverNumber {
+func connectToServer(serverNumber: Int) {
+	if let serverNumber = ServerError.init(rawValue: serverNumber) {
 		serverNumber.message()
 	} else {
 		print("You connected to server successfully")
 	}
-}
-
-func getAnIntFromTheServer() {
-	connectToServer(serverNumber: ServerError.init(rawValue: Int(arc4random_uniform(4)) + 1))
 }
